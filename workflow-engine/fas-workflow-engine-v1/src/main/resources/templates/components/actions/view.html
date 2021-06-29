@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:include="fragments/header :: head">
+</th:block>
+<style type="text/css">
+.form-check-input {
+	position: relative;
+	margin-left: 0rem;
+}
+</style>
+</head>
+<body>
+	<div class="container  container-top">
+		<nav>
+			<th:block th:replace="fragments/nav :: nav"></th:block>
+		</nav>
+		<h5 th:text="${title}" class="head-title"></h5>
+		<h6><a  th:each="link : ${links}" th:href="@{${link}}" class="back-link"><i class="fa fa-backward" aria-hidden="true"></i> Back</a></h6>
+		<form th:object="${formObject}" method="post"
+			th:action="@{/action-mst/save}" cssClass="form">
+
+			<input type="hidden" th:field="*{id}" />
+
+			<div class="row form-group">
+				<div class="col-4" th:if="${'false'}">
+					<label>Action Code</label> <input th:field="*{code}"
+						readonly="readonly" type="text" class="form-control" />
+				</div>
+				<div class="col-4">
+					<label>Action Name</label> <input th:field="*{displayName}"
+						readonly="readonly" type="text" class="form-control" />
+				</div>
+				<div class="col-4">
+					<label>Active</label>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" disabled="disabled"
+							th:field="*{isActive}" th:value="true"> Yes <input
+							class="form-check-input" type="radio" readonly="readonly"
+							disabled="disabled" th:field="*{isActive}" th:value="false">
+						No
+					</div>
+				</div>
+			</div>
+		</form>
+
+		<footer>
+			<th:block th:include="fragments/footer :: footer"></th:block>
+		</footer>
+
+	</div>
+</body>
+</html>

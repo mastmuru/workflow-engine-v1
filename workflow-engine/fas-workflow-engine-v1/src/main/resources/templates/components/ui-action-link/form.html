@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:include="fragments/header :: head"></th:block>
+<style type="text/css">
+label {
+	font-weight: bold;
+}
+
+.form-check-input {
+	position: relative;
+	margin-left: 0rem;
+}
+</style>
+<script type="text/javascript">
+$(document).ready(
+	function () {
+		$("#addNewActionLink").submit(function (evt) {
+                  evt.preventDefault();
+
+                  // PREPARE FORM DATA
+                  let formData = {
+                  	id: $("#pId").val(),
+                  	moduleId: $("#moduleListId").val(),
+                  	code: $("#actionButtonId").val(),
+                  	displayName: $("#displayName").val(),
+                  	pageCode: $("#pageCode").val(),
+                  	actionId: $("#actionId").val(),
+                  	actionName: $("#actionId option:selected").text(),
+                  	roleId: $("#roleListId").val(),
+                  	status: $("#statusListId").val(),
+                  	roleName: $("#roleListId option:selected").text(),
+                  	statusName: $("#statusListId option:selected").text(),
+                  	attribute: $("#attribute").val(),
+                  	orderNo: $("#orderNo").val(),
+                  	isEnable: $("#isEnable").val(),
+                  	isActive: $("#isActive").val(),
+                  	type: $("#type").val(),
+                  	isEnable: $('input[name=isEnable]:checked').val(),
+                  	isActive: $('input[name=isActive]:checked').val(),
+                  	bpId: $("#bpListId").val(),
+                  	bpName: $("#bpListId option:selected").text(),
+                  }
+
+                  $.ajax({
+                  		url: '/wf/ui-action-link/api/saveActionLink',
+                  		type: 'POST',
+                  		contentType: "application/json",
+                  		data: JSON
+                  			.stringify(formData),
+                  		dataType: 'json',
+                  		async: false,
+                  		cache: false,
+                  		success: function (
+                  			response) {
+                  			let successAlert = '<div class="alert alert-success alert-dismissible">' +
+                  				'<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+                  				'<strong>Record saved/updated successfully with Id: ' +
+                  				response.ackNo +
+                  				'</strong>' +
+                  				'</div>'
+                  			$("#response").append(successAlert);
+                  			$("#response").css({"display": "block"});
+
+                  			resetUploadForm();
+                  		},
+                  		error: function (
+                  			response) {
+                  			let errorAlert = '<div class="alert alert-danger alert-dismissible">' +
+                  				'<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+                  				'<strong>' +
+                  				response.message +
+                  				'</strong>' +
+                  				' ,Error: ' +
+                  				message.error +
+                  				'</div>'
+                  			$("#response").append(errorAlert);
+                  			$("#response").css({"display": "block"});
+                  			resetUploadForm();
+                  		}
+                  	});
+				});
+
+		function resetUploadForm() {
+			$('#addNewActionLink input').attr('readonly', 'readonly');
+			
+			$('select').prop('disabled', 'disabled');
+			$('textarea').prop('readonly', 'readonly');
+			$('select').prop('disabled', 'disabled');
+			$('input[type=radio]').attr("disabled",true);
+		}
+
+		var modId = $('#moduleListId').val();
+		console.log("onload:", modId);
+		if (modId != null && modId != "" && modId != undefined) {
+			console.log("onload:", modId);
+			getRoleByModuleId(modId);
+			getStatusByModuleId(modId);
+			getBusinessProcessByModuleId(modId);
+		}
+
+		$('#moduleListId').on('change', function () {
+			//alert(this.value);
+			//$("#statusVal").val(this.value);
+			getRoleByModuleId(this.value);
+			getStatusByModuleId(this.value);
+			getBusinessProcessByModuleId(this.value);
+		});
+
+		function getRoleByModuleId(moduleId) {
+			$('#roleListId').val(null).trigger('change');
+			$('#roleListId').select2('data', null);
+			$('#roleListId')
+				.find('option')
+				.remove()
+				.end()
+				.append(
+                  '<option value="">Select Role</option>')
+				.val('');
+			console.log("getRoleByModuleId:", moduleId);
+			$.ajax({
+				type: "GET",
+				url: "/wf/auth-role/getAuthRolesByModuleId/" +
+                  moduleId,
+				success: function (response) {
+                  console.log("response", response);
+                  $.each(response, function (i, ob) {
+                  	$('#roleListId').append(
+                  		$('<option></option>').val(
+                  			ob.id).html(
+                  			ob.moduleRoleName));
+                  });
+
+                  var roleId = $("#roleId").val();
+                  $("#roleListId").val(roleId);
+				},
+				error: function (e) {
+                  alert("ERROR: ", e);
+                  console.log("ERROR: ", e);
+				}
+			});
+		}
+		function getStatusByModuleId(moduleId) {
+			$('#statusListId').val(null).trigger('change');
+			$('#statusListId').select2('data', null);
+			$('#statusListId')
+				.find('option')
+				.remove()
+				.end()
+				.append(
+                  '<option value="">Select Role</option>')
+				.val('');
+			console.log("getStatusByModuleId:", moduleId);
+			$.ajax({
+				type: "GET",
+				url: "/wf/status/getStatusByModuleId/" +
+                  moduleId,
+				success: function (response) {
+                  console.log("response", response);
+                  $.each(response, function (i, ob) {
+                  	$('#statusListId').append(
+                  		$('<option></option>').val(
+                  			ob.id).html(
+                  			ob.moduleStatusName));
+                  });
+
+                  var roleId = $("#statusId").val();
+                  $("#statusListId").val(roleId);
+				},
+				error: function (e) {
+                  alert("ERROR: ", e);
+                  console.log("ERROR: ", e);
+				}
+			});
+		}
+		
+		function getBusinessProcessByModuleId(moduleId) {
+			$('#bpListId').val(null).trigger('change');
+			$('#bpListId').select2('data', null);
+			$('#bpListId')
+				.find('option')
+				.remove()
+				.end()
+				.append(
+                  '<option value="">Select Role</option>')
+				.val('');
+			console.log("getBusinessProcessByModuleId:", moduleId);
+			$.ajax({
+				type: "GET",
+				url: "/wf/bp/getBusinessProcessByModuleId/" +
+                  moduleId,
+				success: function (response) {
+                  console.log("response", response);
+                  $.each(response, function (i, ob) {
+                  	 $('#bpListId').append($('<option></option>').val(ob.id).html(ob.name));
+                  });
+
+                  var roleId = $("#bpId").val();
+                  $("#bpListId").val(roleId);
+				},
+				error: function (e) {
+                  alert("ERROR: ", e);
+                  console.log("ERROR: ", e);
+				}
+			});
+		}
+
+	});
+
+</script>
+</head>
+<body>
+<div class="container container-top">
+   <nav>
+      <th:block th:replace="fragments/nav :: nav"></th:block>
+   </nav>
+   <h5 th:text="${title}" class="head-title"></h5>
+   <h6>
+      <a th:each="link : ${links}" th:href="@{${link}}" class="back-link"><i
+         class="fa fa-backward" aria-hidden="true"></i> Back</a>
+   </h6>
+   <form th:object="${formObject}" method="post" id="addNewActionLink"
+      cssClass="form">
+      <input type="hidden" th:field="*{id}" id="pId" />
+      <div class="row form-group">
+         <div class="col-3">
+            <label>Module</label> 
+            <select th:field="*{moduleId}"
+               id="moduleListId" class="form-control">
+               <option value="">Select</option>
+               <option th:each="module : ${modules}" th:value="${module.id}"
+                  th:utext="${module.name}" />
+            </select>
+         </div>
+         
+         <div class="col-3">
+            <label>Business Process</label>
+            <input th:field="*{bpId}" id="bpId" type="hidden"
+               class="form-control" /> 
+            <select th:field="*{bpId}"
+               class="form-control select2" id="bpListId">
+               <option value="">Select</option>
+            </select>
+         </div>
+         <div class="col-3">
+            <label>Button/Link Code</label> <input th:field="*{code}"
+               id="actionButtonId" type="text" class="form-control" />
+         </div>
+         <div class="col-3">
+            <label>Display Name</label> <input th:field="*{displayName}"
+               id="displayName" type="text" class="form-control" />
+         </div>        
+      </div>
+      <div class="row form-group">
+       <div class="col-3">
+            <label>UI Page</label> 
+            <select th:field="*{pageCode}" id="pageCode"
+               class="form-control select2">
+               <option value="">Select</option>
+               <option th:each="obj : ${pages}" th:value="${obj.code}"
+                  th:utext="${obj.code}" />
+            </select>
+         </div>
+         <div class="col-3">
+            <label>Action</label> 
+            <select th:field="*{actionId}" id="actionId"
+               class="form-control select2">
+               <option value="">Select</option>
+               <option th:each="task : ${actionKeyValue}" th:value="${task.id}"
+                  th:utext="${task.displayName}+'-'+${task.code}" />
+            </select>
+         </div>
+         <div class="col-3">
+            <label>Authority Role</label>
+            <!-- <select th:field="*{roleId}"
+               class="form-control select2" id="roleListId">
+               <option value="">Select</option>
+               <option th:each="task : ${authRoles}" th:value="${task.id}"
+               	th:utext="${task.moduleRoleName}" /> 
+               </select> -->
+            <input th:field="*{wfRoleId}" id="roleId" type="hidden"
+               class="form-control" /> 
+            <select th:field="*{wfRoleId}"
+               class="form-control select2" id="roleListId">
+               <option value="">Select</option>
+            </select>
+         </div>
+         <div class="col-3">
+            <label>Status</label> <input th:field="*{wfStatusId}" id="statusId"
+               type="hidden" class="form-control" /> 
+            <select
+               th:field="*{wfStatusId}" class="form-control select2"
+               id="statusListId">
+               <option value="">Select</option>
+               <!-- <option th:each="module : ${statusList}" th:value="${module.id}"
+                  th:utext="${module.moduleStatusName}" /> -->
+            </select>
+         </div>         
+      </div>
+      <div class="row form-group">
+      <div class="col-3">
+            <label>Type</label> 
+            <select th:field="*{type}" class="form-control"
+               id="type">
+               <option value="">Select</option>
+               <option value="Action">Action</option>
+               <option value="Link">Navigation Link</option>
+            </select>
+         </div>
+         <div class="col-3">
+            <label>CSS Class</label>
+            <textarea rows="2" th:field="*{attribute}" class="form-control" 
+               id="attribute">
+            </textarea>
+         </div>
+         <div class="col-2">
+            <label>Order</label> <input th:field="*{orderNo}" type="number" id="orderNo"
+               class="form-control" />
+         </div>
+         <div class="col-2">
+            <label>Is Enabled?</label>
+            <div class="form-check" id="isEnable">
+               <input class="form-check-input" type="radio"
+                  th:field="*{isEnable}" th:value="true" name="isEnable">
+               Yes <input class="form-check-input" type="radio"
+                  th:field="*{isEnable}" name="isEnable" th:value="false">
+               No
+            </div>
+         </div>
+         <div class="col-2">
+            <label>Active</label>
+            <div class="form-check">
+               <input class="form-check-input" type="radio"
+                  th:field="*{isActive}" th:value="true" name="isActive">
+               Yes <input class="form-check-input" type="radio"
+                  th:field="*{isActive}" th:value="false" name="isActive">
+               No
+            </div>
+         </div>
+      </div>
+      <button type="submit" class="btn btn-success" style="float: right">Save</button>
+   </form>
+   <div class="row form-group">
+      <div class="col-12" id="response"></div>
+   </div>
+   <footer>
+      <th:block th:include="fragments/footer :: footer"></th:block>
+   </footer>
+</div>
+
+</body>
+</html>

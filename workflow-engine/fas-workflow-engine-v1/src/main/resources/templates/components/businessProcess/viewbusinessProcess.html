@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:include="fragments/header :: head">
+</th:block>
+<style type="text/css">
+label {
+	font-weight: bold;
+}
+
+section {
+	padding: 60px 0;
+}
+
+#accordion-style-1 h1, #accordion-style-1 a {
+	color: #007b5e;
+	font-size: 20px;
+}
+
+#accordion-style-1 .btn-link {
+	font-weight: 400;
+	color: #007b5e;
+	background-color: transparent;
+	text-decoration: none !important;
+	font-size: 16px;
+	font-weight: bold;
+	padding-left: 25px;
+}
+
+#accordion-style-1 .card-body {
+	border-top: 2px solid #007b5e;
+}
+
+#accordion-style-1 .card-header .btn.collapsed .fa.main {
+	display: none;
+}
+
+#accordion-style-1 .card-header .btn .fa.main {
+	background: #007b5e;
+	padding: 13px 11px;
+	color: #ffffff;
+	width: 35px;
+	height: 41px;
+	position: absolute;
+	left: -1px;
+	top: 10px;
+	border-top-right-radius: 7px;
+	border-bottom-right-radius: 7px;
+	display: block;
+}
+
+.form-check-input {
+	position: absolute;
+	margin-top: .3rem;
+	margin-left: -1.25rem;
+	width: 100%;
+	height: 20px;
+}
+
+.select2-container {
+	width: 100% !important;
+}
+
+.select2-container .select2-selection--single {
+	padding: 4px;
+	height: 100% !important;
+}
+</style>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#example").DataTable();
+	});
+</script>
+<script>
+	$(function() {
+		$('.select2').select2();
+	});
+</script>
+</head>
+<body>
+	<div class="container container-top">
+		<nav>
+			<th:block th:replace="fragments/nav :: nav"></th:block>
+		</nav>
+		<h5 th:text="${title}" class="head-title"></h5>
+		<h6>
+			<a th:each="link : ${links}" th:href="@{${link}}" class="back-link"><i
+				class="fa fa-backward" aria-hidden="true"></i> Back</a>
+		</h6>
+		<form th:object="${businessProcessOb}" cssClass="form">
+
+			<input type="hidden" th:field="*{id}" />
+			<div class="row form-group">
+				<div class="col-4">
+					<label>Module</label> <input th:field="*{moduleName}" type="text"
+						class="form-control" readonly="readonly" />
+				</div>
+
+				<div class="col-4">
+					<label>Process Name</label> <input th:field="*{name}" type="text"
+						class="form-control" readonly="readonly" />
+				</div>
+				<div class="col-4">
+					<label>Description</label> <input type="text" class="form-control"
+						th:field="*{description}" readonly="readonly" />
+				</div>
+
+			</div>
+		</form>
+		<div>
+			<table id="example"
+				class="table table-striped table-bordered dt-responsive nowrap"
+				style="width: 100%; box-shadow: 4px 5px 5px #eceeef;">
+				<thead>
+					<!-- <th scope="row">#ID</th> -->
+					<th scope="row">Authority Roles</th>
+					<th scope="row">Action</th>
+					<th scope="row">Current Task</th>
+					<th scope="row">Next Task</th>
+					<th scope="row">Sub Process Type</th>
+					<th scope="row">Active</th>
+					<th scope="row">Rule Result</th>
+					<th scope="row">Notification</th>
+					<th scope="row"></th>
+				</thead>
+				<tbody>
+					<tr th:if="${businessTasks.empty}">
+						<td colspan="10">No Record found</td>
+					</tr>
+					<tr th:each="obj : ${businessTasks}">
+						<!-- <td th:text="${obj.id}"></td> -->
+						<td>
+							<p th:text="${roleName}" th:each="roleName : ${obj.roleNames}"
+								style="padding: 0px; margin: 0px;"></p>
+						</td>
+						<td th:text="${obj.actionCode}"></td>
+						<td th:text="${obj.currentStepCode}"></td>
+						<td th:text="${obj.nextStepCode}"></td>
+						<td th:text="${obj.subProcessType}"></td>
+						<td th:text="${obj.isActive}"></td>
+						<td th:text="${obj.rule_result}"></td>
+						<td th:text="${obj.message}"></td>
+						<td align="center"><a class="btn btn-outline-primary btn-sm"
+							th:href="@{/bp/updateBusinessProcessTxnAction/__${obj.id}__}"
+							role="button">View/Update</a></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<div class="container-fluid bg-gray" id="accordion-style-1">
+				<section>
+					<div class="row">
+						<!-- <div class="col-12">
+							<h1 class="text-green mb-1 text-left"></h1>
+						</div> -->
+						<div class="col-12 mx-auto">
+							<div class="accordion" id="accordionExample">
+								<div class="card">
+									<div class="card-header" id="headingOne">
+										<h5 class="mb-0">
+											<button class="btn btn-link btn-block text-left"
+												type="button" data-toggle="collapse"
+												data-target="#collapseOne" aria-expanded="true"
+												aria-controls="collapseOne">
+												<i class="fa fa-sliders main"></i><i
+													class="fa fa-angle-double-right mr-3"></i>Create Task Flow
+											</button>
+										</h5>
+									</div>
+
+									<div id="collapseOne" class="collapse fade"
+										aria-labelledby="headingOne" data-parent="#accordionExample">
+										<div class="card-body">
+											<form th:object="${wfActionTrn}" method="post"
+												th:action="@{/bp/saveTaskStep}" cssClass="form">
+												<input type="hidden" th:field="*{bpId}" /> <input
+													type="hidden" th:field="*{id}" />
+
+												<div class="row form-group">
+													<div class="col-3">
+														<label>Action</label> <select th:field="*{actionId}"
+															class="form-control select2">
+															<option value="">Select</option>
+															<option th:each="entry : ${actionKeyValue.response}"
+																th:value="${entry.id}" th:utext="${entry.displayName}+'-'+${entry.code}"></option>
+														</select>
+													</div>
+													<div class="col-3">
+														<label>Current Task</label> <select
+															th:field="*{currentStepId}" class="form-control select2">
+															<option value="">Select</option>
+															<option th:each="task : ${currentTasks}"
+																th:value="${task.id}" th:utext="${task.description}" />
+														</select>
+													</div>
+													<div class="col-3">
+														<label>Next Task</label> <select th:field="*{nextStepId}"
+															class="form-control select2">
+															<option value="">Select</option>
+															<option th:each="task : ${currentTasks}"
+																th:value="${task.id}" th:utext="${task.description}" />
+														</select>
+													</div>
+													<div class="col-3">
+														<label>Sub Process Type</label> <input
+															th:field="*{subProcessType}" type="text"
+															class="form-control" />
+													</div>
+												</div>
+												<div class="row form-group">
+													<div class="col-4">
+														<label>Authority Role</label> <select th:field="*{roles}"
+															multiple class="form-control multiple  select2">
+															<option value="">Select</option>
+															<option th:each="task : ${authRoles}"
+																th:value="${task.id}" th:utext="${task.moduleRoleName}" />
+														</select>
+													</div>
+
+													<div class="col-2">
+														<label>Rule Result</label>
+														<div class="form-check">
+															<input class="form-check-input" type="radio"
+																th:field="*{rule_result}" th:value="PASS"> <label
+																class="form-check-label" for="flexRadioDefault1">
+																Pass </label>
+														</div>
+														<div class="form-check">
+															<input class="form-check-input" type="radio"
+																th:field="*{rule_result}" th:value="FAIL"> <label
+																class="form-check-label" for="flexRadioDefault2">
+																Fail </label>
+														</div>
+													</div>
+													<div class="col-2">
+														<label>Active</label>
+
+														<div class="form-check">
+															<input class="form-check-input" type="radio"
+																th:field="*{isActive}" th:value="true"> <label
+																class="form-check-label" for="flexRadioDefault1">
+																Yes </label>
+														</div>
+														<div class="form-check">
+															<input class="form-check-input" type="radio"
+																th:field="*{isActive}" th:value="false"> <label
+																class="form-check-label" for="flexRadioDefault2">
+																No </label>
+														</div>
+													</div>
+													<div class="col-4">
+														<label>Notification Message</label> <input
+															th:field="*{message}" type="text" class="form-control" />
+													</div>
+												</div>
+												<div class="row form-group">
+													<div class="col-12">
+														<label>Business Rule Description</label>
+														<textarea rows="5" th:field="*{ruleDescription}"
+															class="form-control"></textarea>
+													</div>
+												</div>
+												<button type="submit" class="btn btn-success">Save</button>
+											</form>
+										</div>
+									</div>
+								</div>
+								<div class="card">
+									<div class="card-header" id="headingTwo">
+										<h5 class="mb-0">
+											<button class="btn btn-link collapsed btn-block text-left"
+												type="button" data-toggle="collapse"
+												data-target="#collapseTwo" aria-expanded="false"
+												aria-controls="collapseTwo">
+												<i class="fa fa-cogs main"></i> <i
+													class="fa fa-angle-double-right mr-3"></i> Business Rules
+											</button>
+										</h5>
+									</div>
+									<div id="collapseTwo" class="collapse fade"
+										aria-labelledby="headingTwo" data-parent="#accordionExample">
+										<div class="card-body">
+											<form>
+
+												<input type="hidden" />
+
+												<div class="row form-group">
+													<div class="col-12">
+														<label>Rule</label>
+														<textarea rows="5" class="form-control"></textarea>
+													</div>
+												</div>
+
+												<button type="submit" class="btn btn-success"
+													style="float: right">Save</button>
+											</form>
+										</div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</section>
+
+			</div>
+
+		</div>
+		<br>
+
+		<footer>
+
+			<th:block th:include="fragments/footer :: footer"></th:block>
+
+		</footer>
+
+	</div>
+</body>
+</html>

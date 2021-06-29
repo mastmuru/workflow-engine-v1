@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+   <head>
+      <th:block th:include="fragments/header :: head"></th:block>
+      <style type="text/css">
+         label {
+         	font-weight: bold;
+         }
+         .form-check-input {
+			position: relative;
+			margin-left: 0rem;
+		}
+      </style>
+   </head>
+   <body>
+      <div class="container container-top">
+         <nav>
+            <th:block th:replace="fragments/nav :: nav"></th:block>
+         </nav>
+         <h5 th:text="${title}" class="head-title"></h5>
+         <h6><a  th:each="link : ${links}" th:href="@{${link}}" class="back-link"><i class="fa fa-backward" aria-hidden="true"></i> Back</a></h6>
+         <form th:object="${formObject}" method="post"
+            th:action="@{/ui-action-link/delete}" cssClass="form">
+            <input type="hidden" th:field="*{id}" />
+            <div class="row form-group">
+               <div class="col-3">
+                  <label>Module</label> 
+				  <input th:field="*{moduleName}"
+                     type="text" class="form-control" readonly="readonly"/>
+               </div>
+               <div class="col-3">
+                  <label>Button/Link Code</label> <input th:field="*{code}" readonly="readonly"
+                     type="text" class="form-control" />
+               </div>
+               <div class="col-3">
+                  <label>Display Name</label> <input th:field="*{displayName}" readonly="readonly"
+                     type="text" class="form-control" />
+               </div>
+               <div class="col-3">
+                  <label>UI Page</label> <input type="text" class="form-control" readonly="readonly"
+                     th:field="*{pageCode}" />
+               </div>
+            </div>
+            <div class="row form-group">
+               <div class="col-3">
+                  <label>Action</label> 
+				  <input th:field="*{actionName}"
+                     type="text" class="form-control" readonly="readonly"/>
+               </div>
+               <div class="col-3">
+                  <label>Authority Role</label> 
+				  <input th:field="*{roleName}"
+                     type="text" class="form-control" readonly="readonly"/>
+               </div>
+               <div class="col-3">
+                  <label>Status</label> 
+				  <input th:field="*{statusName}"
+                     type="text" class="form-control" readonly="readonly"/>
+               </div>
+                <div class="col-3">
+               <label>Type</label> 
+			   <input th:field="*{type}"
+                     type="text" class="form-control" readonly="readonly"/>
+            </div>
+            </div>
+            <div class="row form-group">   
+             <div class="col-3">
+                  <label>CSS Class</label> 
+                  <textarea rows="2" th:field="*{attribute}" class="form-control"readonly="readonly" >
+                  
+                  </textarea>
+               </div>           
+            <div class="col-3">
+               <label>Order</label> <input th:field="*{orderNo}"
+                  type="number" class="form-control" readonly="readonly"/>
+            </div>
+            <div class="col-3">
+               <label>Is Enabled?</label>
+               <div class="form-check">
+                  <input class="form-check-input" type="radio"
+                     th:field="*{isEnable}" th:value="true" disabled="disabled">  Yes 
+                  <input class="form-check-input" type="radio"
+                     th:field="*{isEnable}" th:value="false" disabled="disabled">  No
+               </div>
+            </div>
+            <div class="col-3">
+               <label>Active</label>
+               <div class="form-check">
+                  <input class="form-check-input" type="radio"
+                     th:field="*{isActive}" th:value="true" disabled="disabled">  Yes 
+                  <input class="form-check-input" type="radio"
+                     th:field="*{isActive}" th:value="false" disabled="disabled">  No
+               </div>
+            </div>
+      </div>
+      <div class="row form-group col-12 text-right">
+      	<button type="submit" class="btn btn-danger" style="float: right">Delete</button>  
+      </div>
+      
+      </form>
+      <footer>
+         <th:block th:include="fragments/footer :: footer"></th:block>
+      </footer>
+      </div>
+   </body>
+</html>

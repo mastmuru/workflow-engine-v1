@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:include="fragments/header :: head">
+</th:block>
+<style type="text/css">
+label {
+	font-weight: bold;
+}
+
+.form-check-input {
+	position: relative;
+	margin-left: 0rem;
+}
+</style>
+</head>
+<body>
+	<div class="container container-top">
+		<nav>
+			<th:block th:replace="fragments/nav :: nav"></th:block>
+		</nav>
+		<h5 th:text="${title}" class="head-title"></h5>
+		<h6><a  th:each="link : ${links}" th:href="@{${link}}" class="back-link"><i class="fa fa-backward" aria-hidden="true"></i> Back</a></h6>
+		<form th:object="${formObject}" method="post"
+			th:action="@{/action-transition/save}" cssClass="form">
+			<input type="hidden" th:field="*{bpId}" /> <input type="hidden"
+				th:field="*{id}" />
+			<div class="row form-group">
+				<div class="col-4">
+					<label>Current Task</label> <select th:field="*{currentStepId}"
+						class="form-control select2">
+						<option value="">Select</option>
+						<option th:each="task : ${currentTasks}" th:value="${task.id}"
+							th:utext="${task.description}" />
+					</select>
+				</div>
+				<div class="col-4">
+					<label>Next Task</label> <select th:field="*{nextStepId}"
+						class="form-control select2">
+						<option value="">Select</option>
+						<option th:each="task : ${currentTasks}" th:value="${task.id}"
+							th:utext="${task.description}" />
+					</select>
+				</div>
+				<div class="col-4">
+					<label>Sub Process Type</label> <input th:field="*{subProcessType}"
+						type="text" class="form-control" />
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-4">
+					<label>Action/Link</label> <select th:field="*{actionId}"
+						class="form-control select2">
+						<option value="">Select</option>
+						<option th:each="task : ${actionKeyValue.response}"
+							th:value="${task.id}" th:utext="${entry.displayName}+'-'+${entry.code}" />
+					</select>
+				</div>
+				<div class="col-4">
+					<label>Rule Result</label>
+					<div class="form-check">
+						<input class="form-check-input" type="radio"
+							th:field="*{rule_result}" th:value="PASS"> <label
+							class="form-check-label" for="flexRadioDefault1"> Pass </label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="radio"
+							th:field="*{rule_result}" th:value="FAIL"> <label
+							class="form-check-label" for="flexRadioDefault2"> Fail </label>
+					</div>
+				</div>
+				<div class="col-4">
+					<label>Active</label>
+					<div class="form-check">
+						<input class="form-check-input" type="radio"
+							th:field="*{isActive}" th:value="true"> <label
+							class="form-check-label" for="flexRadioDefault1"> Yes </label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="radio"
+							th:field="*{isActive}" th:value="false"> <label
+							class="form-check-label" for="flexRadioDefault2"> No </label>
+					</div>
+				</div>
+			</div>
+			<div class="row form-group">
+				<div class="col-6">
+					<label>Notification Message</label> <input th:field="*{message}"
+						type="text" class="form-control" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label></label>
+				<button type="submit" class="btn btn-success" style="float: right;">Save</button>
+			</div>
+		</form>
+
+		<footer>
+			<th:block th:include="fragments/footer :: footer"></th:block>
+		</footer>
+
+	</div>
+</body>
+</html>

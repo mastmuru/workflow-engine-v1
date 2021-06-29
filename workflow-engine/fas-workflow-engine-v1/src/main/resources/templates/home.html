@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:include="fragments/header :: head">
+</th:block>
+</head>
+<body>
+	<div class="container container-top">
+		<nav>
+			<th:block th:replace="fragments/nav :: nav"></th:block>
+		</nav>
+
+		<br>
+		<!--     <h4>To see List  <a th:href="@{/list}">Click Here</a></h4>
+    <br> -->
+		<p>A workflow engine is a software application designed to help
+			users enforce a series of recurring tasks that make up a business
+			process or a workflow. Workflow engine takes cues from the workflow's
+			design and guides the process through its various steps. This is done
+			by task routing, also called workflow automation.</p>
+
+		<h6>Workflow engines mainly have three functions:</h6>
+
+		<ul>
+			<li>Verification of the current process status: Check whether it
+				is valid executing a task, given current status.</li>
+			<li>Determine the authority of users: Check if the current user
+				is permitted to execute the task.</li>
+			<li>Executing condition script: After passing the previous two
+				steps, the workflow engine executes the task, and if the execution
+				successfully completes, it returns the success, if not, it reports
+				the error to trigger and roll back the change.</li>
+		</ul>
+		<div>
+			<img th:src="@{images/wf.svg}"
+				style="width: 64%; margin-left: 15%;" />
+		</div>
+
+		<footer>
+			<th:block th:include="fragments/footer :: footer"></th:block>
+		</footer>
+
+	</div>
+</body>
+</html>

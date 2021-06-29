@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:include="fragments/header :: head">
+</th:block>
+</head>
+<body>
+	<div class="container  container-top">
+		<nav>
+			<th:block th:replace="fragments/nav :: nav"></th:block>
+		</nav>
+		<br>
+		<br>
+		<div>
+			<!-- <img src="images/wf-schema.png" style="width: 64%;margin-left: 20%;"/> -->
+
+			<img src="../static/images/wf-schema.png" width="1000" style="margin-left: 10%;"
+				th:src="@{images/wf-schema.png}" />
+
+
+		</div>
+
+		<footer>
+			<th:block th:include="fragments/footer :: footer"></th:block>
+		</footer>
+
+	</div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+/**
+ * 
+ */
+package com.fa.workflowengine.master.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.fa.workflowengine.master.entity.UserMstEntity;
+
+/**
+ * @author Muruganandam
+ *
+ */
+public interface UserMstRepository extends JpaRepository<UserMstEntity, Long> {
+	UserMstEntity findByUsername(String username);
+}

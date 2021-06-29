@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:include="fragments/header :: head">
+</th:block>
+<style type="text/css">
+label {
+	font-weight: bold;
+}
+
+.form-check-input {
+	position: relative;
+	margin-left: 0rem;
+}
+</style>
+<script type="text/javascript">
+$(document).ready(
+	function () {
+		
+		var modId = $('#moduleListId').val();
+		
+		if (modId != null && modId != "" && modId != undefined) {
+			getStatusByModuleId(modId);
+		}
+		
+		$('#moduleListId').on('change', function () {
+			getStatusByModuleId(this.value);
+		});
+		
+		function getStatusByModuleId(moduleId) {
+			$('#statusListId').val(null).trigger('change');
+			$('#statusListId').select2('data', null);
+			$('#statusListId')
+				.find('option')
+				.remove()
+				.end()
+				.append(
+                  '<option value="">Select Role</option>')
+				.val('');
+			console.log("getStatusByModuleId:", moduleId);
+			$.ajax({
+				type: "GET",
+				url: "/wf/status/getStatusByModuleId/" +
+                  moduleId,
+				success: function (response) {
+                  console.log("response", response);
+                  $.each(response, function (i, ob) {
+                  	$('#statusListId').append(
+                  		$('<option></option>').val(
+                  			ob.id).html(
+                  			ob.moduleStatusName));
+                  });
+
+                  var roleId = $("#statusId").val();
+                  $("#statusListId").val(roleId);
+				},
+				error: function (e) {
+                  alert("ERROR: ", e);
+                  console.log("ERROR: ", e);
+				}
+			});
+		}
+		
+		$('#statusListId').on('change', function () {
+			$("#description").val($("#statusListId option:selected").text());
+			
+		});
+});
+</script>
+</head>
+<body>
+	<div class="container container-top">
+		<nav>
+			<th:block th:replace="fragments/nav :: nav"></th:block>
+		</nav>
+		<h5 th:text="${title}" class="head-title"></h5>
+		<h6>
+			<a th:each="link : ${links}" th:href="@{${link}}" class="back-link"><i
+				class="fa fa-backward" aria-hidden="true"></i> Back</a>
+		</h6>
+		<form th:object="${formObject}" method="post"
+			th:action="@{/tasks/save}" cssClass="form">
+
+			<input type="hidden" th:field="*{id}" />
+
+			<div class="row form-group">
+				<div class="col-3">
+					<label>Module</label> <select th:field="*{moduleId}"
+						required="required" class="form-control select2" id="moduleListId">
+						<option value="">Select</option>
+						<option th:each="module : ${modules.response}"
+							th:value="${module.id}" req th:utext="${module.name}" />
+					</select>
+				</div>
+				<div class="col-3">
+					<label>Status</label> 
+					<input th:field="*{statusId}" id="statusId"
+               type="hidden" class="form-control" /> 
+					<select th:field="*{statusId}" id="statusListId"
+						class="form-control select2">
+						<option value="">Select</option>
+						<!-- <option th:each="module : ${statusList}" th:value="${module.id}"
+							th:utext="${module.moduleStatusName}" /> -->
+					</select>
+				</div>
+				<div class="col-3">
+					<label>Description</label> <input th:field="*{description}" id="description"
+						type="text" class="form-control" />
+				</div>
+				<div class="col-3">
+					<label>Active</label>
+
+					<div class="form-check">
+						<input class="form-check-input" type="radio"
+							th:field="*{isActive}" th:value="true"> Yes <input
+							class="form-check-input" type="radio" th:field="*{isActive}"
+							th:value="false"> No
+					</div>
+				</div>
+			</div>
+
+			<button type="submit" class="btn btn-success" style="float: right">Save</button>
+		</form>
+
+		<footer>
+			<th:block th:include="fragments/footer :: footer"></th:block>
+		</footer>
+
+	</div>
+</body>
+</html>

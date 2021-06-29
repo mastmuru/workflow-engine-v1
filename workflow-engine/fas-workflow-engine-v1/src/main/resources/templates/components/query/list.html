@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:include="fragments/header :: head">
+</th:block>
+
+<style type="text/css">
+</style>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#example").DataTable();
+
+		$('#statusId').on('change', function() {
+			$("#statusVal").val(this.value);
+		});
+	});
+</script>
+</head>
+<body>
+	<div class="container container-top">
+		<nav>
+			<th:block th:replace="fragments/nav :: nav"></th:block>
+		</nav>
+		<h5 th:text="${title}" class="head-title"></h5>
+		<a class="btn btn-success btn-sm" th:href="@{/query/form}"
+			role="button"><i class="fa fa-plus-circle" aria-hidden="true"></i>
+			Add New Task Step Action</a> <br> <br>
+
+
+
+
+		<table id="example"
+			class="table table-striped table-bordered dt-responsive nowrap"
+			style="width: 100%; box-shadow: 4px 5px 5px #eceeef;">
+			<thead>
+				<th scope="row">#ID</th>
+				<th scope="row">Action</th>
+				<th scope="row">Authority Role</th>
+				<th scope="row">Next Task Step</th>
+				<th scope="row">Active</th>
+				<th scope="row">View</th>
+				<th scope="row">Update</th>
+			</thead>
+			<tbody>
+				<tr th:if="${list.empty}">
+					<td colspan="10">No Record found</td>
+				</tr>
+				<tr th:each="obj : ${list}">
+					<td th:text="${obj.id}" style="width: 10px"></td>
+					<td th:text="${obj.actionName}"></td>
+					<td th:text="${obj.roleName}"></td>
+					<td th:text="${obj.stepName}"></td>
+					<td th:text="${obj.isActive}"></td>
+					<td align="center"><a class="btn btn-outline-primary btn-sm"
+						th:href="@{/query/view/__${obj.id}__}" role="button"><i
+							class="fa fa-eye" aria-hidden="true"></i> View</a></td>
+					<td align="center"><a class="btn btn-outline-primary btn-sm"
+						th:href="@{/query/update/__${obj.id}__}" role="button"><i
+							class="fa fa-pencil-square-o" aria-hidden="true"></i> Update</a></td>
+				</tr>
+			</tbody>
+		</table>
+		<footer>
+			<th:block th:include="fragments/footer :: footer"></th:block>
+		</footer>
+
+	</div>
+</body>
+</html>
