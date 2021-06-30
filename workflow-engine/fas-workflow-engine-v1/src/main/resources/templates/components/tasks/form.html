@@ -63,7 +63,8 @@ $(document).ready(
 		
 		$('#statusListId').on('change', function () {
 			$("#description").val($("#statusListId option:selected").text());
-			
+			$("#statusId").val($("#statusListId").val());
+			/* $("#statusId").val($("#statusListId option:selected").text()); */
 		});
 });
 </script>
@@ -96,10 +97,10 @@ $(document).ready(
 					<label>Status</label> 
 					<input th:field="*{statusId}" id="statusId"
                type="hidden" class="form-control" /> 
-					<select th:field="*{statusId}" id="statusListId"
-						class="form-control select2">
+					<select th:field="*{statusId}" 
+						class="form-control select2" id="statusListId">
 						<option value="">Select</option>
-						<!-- <option th:each="module : ${statusList}" th:value="${module.id}"
+						 <!-- <option th:each="module : ${statusList}" th:value="${module.id}"
 							th:utext="${module.moduleStatusName}" /> -->
 					</select>
 				</div>
